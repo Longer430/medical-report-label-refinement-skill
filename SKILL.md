@@ -117,7 +117,7 @@ out = np.where(np.isnan(j), b, (b + j) / 2)
 - **Suggested next step**
 
 
-For a full worked example, see `examples.md` in this skill's folder.
+For a full worked example, see `examples.md` in this skill's folder. Ready-made helpers live in `scripts/`: `audit_labels.py` (Section 2 audit: per-finding correlation, disagreement direction, multilingual keyword screening, writes suspicious cells for review) and `build_blend.py` (Section 3 cell-wise mean with fallback). Try them on `toy_data/` first.
 
 ---
 

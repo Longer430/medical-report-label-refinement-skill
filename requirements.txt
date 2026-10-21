@@ -1,0 +1,4 @@
+pandas>=2.0
+numpy>=1.24
+pyarrow>=14   # only needed to read/write .parquet
+kaggle>=1.6   # only needed for scripts/download_public_labels.py

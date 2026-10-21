@@ -1,3 +1,6 @@
 .DS_Store
 __pycache__/
 *.pyc
+data/
+audit_out/
+*.parquet

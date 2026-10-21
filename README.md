@@ -19,6 +19,19 @@ Distilled from the public discussions and released code of the
 
 See [examples.md](examples.md) for a full walk-through on the RSNA 2026 Knee Abnormality Detection competition: the public label lineage, an audit that found a systematic synovitis miss in an in-house label set, and a paired experiment design.
 
+## Repository layout
+
+```
+SKILL.md                         the skill (what the agent reads)
+examples.md                      RSNA 2026 Knee walk-through + how to reproduce it
+scripts/audit_labels.py          compare two label tables + multilingual keyword screening
+scripts/build_blend.py           cell-wise mean of two label sources (blendjev rule)
+scripts/download_public_labels.py  fetch the public labels / train.csv from Kaggle (nothing is redistributed)
+toy_data/                        10 fictional studies to try the scripts in seconds
+```
+
+No competition data, reports or label files are stored here. Download them from Kaggle under their own licences.
+
 ## Install
 
 **Claude Code / Claude:** put the folder containing `SKILL.md` at `~/.claude/skills/medical-report-label-refinement/`, or upload it as a skill.

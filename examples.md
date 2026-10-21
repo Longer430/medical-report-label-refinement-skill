@@ -94,6 +94,45 @@ I skipped this because a full 5-fold OOF did not fit the time left in the compet
 - Whether OAI was allowed external data was disputed in the forum (some participants could not register for access). Labels from blendjev do not involve OAI.
 - Gold-58 has about 10 positives in some classes, so differences of a few hundredths are noise.
 
+## Reproduce it yourself
+
+This repository ships **no competition data and no label files**. You download them from Kaggle under their own licences.
+
+**0. Try the scripts on fictional toy data first (no download, seconds):**
+
+```bash
+pip install -r requirements.txt
+python scripts/audit_labels.py toy_data/toy_labels_a.csv toy_data/toy_labels_b.csv \
+    --reports toy_data/toy_reports.csv --names a b --out audit_out
+```
+
+**1. Get the real files.** Join the competition and accept its rules on kaggle.com, set up a Kaggle API token, then:
+
+```bash
+python scripts/download_public_labels.py --out data
+```
+
+This fetches `labels_v1_blend.parquet` (CC0), `HYBRID_labels_scores.csv` (JEV, CC0), the published `labels_v1_blendjev.parquet` for checking, and the competition `train.csv` (competition rules apply; do not redistribute it).
+
+**2. Rebuild blendjev and check it against the published file:**
+
+```bash
+python scripts/build_blend.py data/labels_v1_blend.parquet data/HYBRID_labels_scores.csv \
+    audit_out/my_blendjev.csv --reference data/labels_v1_blendjev.parquet
+# expect: rows 4349; the original author reports max |rebuild - reference| = 0 for this rule
+```
+
+**3. Audit your own label table against it** (same 12 columns plus `StudyInstanceUID`):
+
+```bash
+python scripts/audit_labels.py audit_out/my_blendjev.csv my_labels.csv \
+    --reports data/train.csv --names blendjev mine --out audit_out
+```
+
+`audit_out/suspicious_cells.csv` lists cells to review, sorted by priority: 1 = the tables disagree and the report has a keyword (most likely a real miss), 2 = disagreement only, 3 = keyword but one table low, 4 = keyword but both low (mostly negations such as "no effusion"). With my in-house v5 table the script reproduced the Synovitis row exactly (204 disagreements, all "blendjev higher", 193 with a keyword) and put 219 cells in priority 1 across all findings, a review list one person can work through. Your numbers will depend on your labels.
+
+Step 3 of the walk-through (the paired training run) depends on your own image pipeline, so it is described rather than scripted.
+
 ## Takeaways
 
 1. Audit first: a keyword-plus-disagreement check found a systematic, fixable miss in minutes.
