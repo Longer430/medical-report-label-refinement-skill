@@ -116,6 +116,9 @@ out = np.where(np.isnan(j), b, (b + j) / 2)
 - **What it does and does not show:** sample size, whether the expert set was used for selection, whether this is independent clinical validation
 - **Suggested next step**
 
+
+For a full worked example, see `examples.md` in this skill's folder.
+
 ---
 
 Copyright (c) 2026 Wenting Long ([@Longer430](https://github.com/Longer430)). Released under the MIT License.

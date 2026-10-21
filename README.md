@@ -15,6 +15,10 @@ It walks an agent through:
 Distilled from the public discussions and released code of the
 [RSNA 2026 Knee Abnormality Detection](https://www.kaggle.com/competitions/rsna-knee-abnormality-detection) Kaggle competition, plus a local paired comparison of two report-label sets. It credits the public work of stevenleehans, nartaa (blendjev labels), riadmohamed42 (JEV labels), Archit Konde, hengck23, Chris Deotte and Kirderf. The skill contains no competition data, reports, or labels.
 
+## Example
+
+See [examples.md](examples.md) for a full walk-through on the RSNA 2026 Knee Abnormality Detection competition: the public label lineage, an audit that found a systematic synovitis miss in an in-house label set, and a paired experiment design.
+
 ## Install
 
 **Claude Code / Claude:** put the folder containing `SKILL.md` at `~/.claude/skills/medical-report-label-refinement/`, or upload it as a skill.
