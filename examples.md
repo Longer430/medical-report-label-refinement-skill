@@ -76,7 +76,39 @@ Because both values *and* weights change, this is reported as a **supervision-po
 
 I smoke-tested first (8 cases, 1 epoch): the pipeline, label hash, output files and gold scoring all worked. The smoke AUC (~0.45) is meaningless and was ignored.
 
-**Result:** pending. I will add the gold-58 per-class table here when the full run finishes.
+**Result (fold 0, single seed, both runs 16 epochs, ~2.7 h each on one RTX 4090):**
+
+| Judge | v5 arm | blendjev arm | Difference |
+|---|---|---|---|
+| gold-58 macro AUC, 24 windows | 0.879 | 0.896 | +0.017 (paired bootstrap 95% CI +0.003 to +0.032) |
+| gold-58 macro AUC, 78 windows | 0.891 | 0.903 | +0.011 (95% CI −0.002 to +0.025; better in 96% of resamples) |
+| fold-0 macro AUC vs **v5** reference (724 cases), 78 windows | 0.861 | 0.875 | +0.014 |
+
+Per class on gold-58 (78 windows), positives/negatives in brackets:
+
+| Finding | v5 | blendjev | Diff |
+|---|---|---|---|
+| Synovitis (27/31) | 0.762 | 0.805 | **+0.043** (95% CI −0.03 to +0.12) |
+| Fracture (18/40) | 0.881 | 0.922 | +0.042 |
+| Lateral OA (11/47) | 0.783 | 0.810 | +0.027 |
+| Contusion (19/39) | 0.901 | 0.924 | +0.023 |
+| Medial Meniscus (26/32) | 0.968 | 0.986 | +0.018 |
+| PF OA (21/37) | 0.812 | 0.829 | +0.017 |
+| Medial OA (15/43) | 0.955 | 0.971 | +0.016 |
+| Effusion (35/23) | 0.979 | 0.986 | +0.007 |
+| ACL (24/34) | 0.957 | 0.953 | −0.004 |
+| Lateral Meniscus (23/35) | 0.865 | 0.858 | −0.006 |
+| Baker's (12/46) | 0.975 | 0.966 | −0.009 |
+| MCL (9/49) | 0.859 | 0.821 | −0.039 |
+
+How to read it:
+
+- The new supervision helped on all three judges. The fold-0 result is the most telling: it is scored against **v5's own labels**, which should favour the v5 arm, yet blendjev still won by 0.014 on 724 cases.
+- The biggest gains are on the findings the audit pointed to (synovitis) and on the diffuse findings reports tend to under-describe (lateral OA, contusion). That is consistent with the audit, but per-class intervals on 58 cases are wide and include zero.
+- MCL dropped (9 positives only, so very noisy). Worth a look in the label audit, not a conclusion.
+- This is one fold and one seed, and both label values and loss weights changed. It shows the supervision policy is better here; it does not isolate which change did it.
+- Checkpoints were selected on fold-0, never on gold-58, so the gold-58 numbers are not inflated by selection.
+
 
 ## Step 4: OOF correction (Skill section 4), not done here
 
