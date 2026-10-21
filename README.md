@@ -31,4 +31,8 @@ The agent will then use it whenever you work on report-derived, LLM-extracted, o
 
 ## License
 
-[MIT](LICENSE)
+Copyright (c) 2026 Wenting Long ([@Longer430](https://github.com/Longer430)).
+
+Released under the [MIT License](LICENSE). You may use, modify and redistribute this skill, including commercially, as long as the copyright notice and license text are kept.
+
+If this skill helps your work, a link back to this repository is appreciated.

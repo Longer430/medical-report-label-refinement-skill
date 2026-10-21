@@ -1,6 +1,7 @@
 ---
 name: medical-report-label-refinement
 description: Improve weak labels for medical imaging models when most cases only have free-text radiology reports. Extract, audit, fuse, and OOF-correct soft labels, and evaluate label schemes fairly. Use when training image models on report-derived, LLM-extracted, or otherwise noisy labels.
+license: MIT
 ---
 
 # Medical Report Label Refinement
@@ -114,3 +115,7 @@ out = np.where(np.isnan(j), b, (b + j) / 2)
 - **Results:** expert-set macro AUC and per-class AUC with positive/negative counts; public leaderboard if available
 - **What it does and does not show:** sample size, whether the expert set was used for selection, whether this is independent clinical validation
 - **Suggested next step**
+
+---
+
+Copyright (c) 2026 Wenting Long ([@Longer430](https://github.com/Longer430)). Released under the MIT License.
