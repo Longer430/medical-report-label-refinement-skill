@@ -120,6 +120,24 @@ Public reports suggest the next gain is image-model OOF blending, especially for
 
 I skipped this because a full 5-fold OOF did not fit the time left in the competition.
 
+## Leaderboard outcome (public split, 30% of the hidden test)
+
+| Submission | Expert set (58) | Public LB |
+|---|---|---|
+| Public v9 weights, no fine-tuning | n/a | 0.932 |
+| v9 weights fine-tuned on in-house v5 labels | 0.917 | 0.934 |
+| ImageNet CoAtNet, blendjev labels, fold 0 only | 0.903 | 0.926 |
+| **ImageNet CoAtNet, blendjev labels, all 4,271 cases, last epoch** | 0.920 | **0.940** |
+| Probability mean of 3 models incl. the v9-based ones | **0.924** | 0.933 |
+| Two v9-initialised all-data submissions | 0.917 | timed out on Kaggle |
+
+Lessons:
+
+- The new labels did carry over to the hidden test: the clean, all-data blendjev model is the best submission built only from competition data and CC0 labels (0.940 vs 0.934 before).
+- The expert set mis-ranked the ensemble. Its v9 members came from public weights whose training data probably overlapped the expert cases, which inflated their expert-set scores. Never select on an expert set that a component may have trained on.
+- Several independent teams reported about 0.94 public for "report-derived labels + one image model", which looks like the practical ceiling of that recipe. Higher public scores came from external data (with disputed rules), stronger architectures, and blends tuned on the public split.
+- Runtime matters: two submissions that were fine locally timed out on Kaggle's hidden test. Time one full hidden-test-sized run before betting a final submission on a slower model.
+
 ## What the public scores do and do not show
 
 - The 0.949 single model combined blendjev labels with external OAI data, crop and mirror TTA, and SWA epochs selected on gold-58. Label changes alone moved its public score from 0.940 to 0.942. Do not credit the full score to labels.

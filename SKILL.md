@@ -33,6 +33,11 @@ Key rules:
 - Keep soft probabilities. Hedged wording ("suspected", "cannot exclude") should map to intermediate values.
 - Handle multilingual reports deliberately (Spanish, Portuguese, German, ...). Otherwise you get systematic misses.
 
+Ways to get better reads (practitioner ideas, mostly untested here; validate before relying on them):
+- **Controlled questioning:** instead of one "label these 12 findings" prompt, turn a published reading rubric for the anatomy into small, atomic yes/no questions and ask them one by one. The answers can themselves be extra training targets.
+- **Spend the expensive annotator only where it matters:** label everything with a cheap reader, then send only the uncertain or high-impact cells (high spread, disagreement, rare positives) to the strongest/most expensive model, and run a second confirmation round on those. Labelling everything with the most expensive model burns budget fast; budget control is part of the job.
+- **Report + key images for findings reports omit:** for findings the text often leaves out, give a multimodal model the report plus a few targeted slices (or hand-crafted features from them). The hard part is choosing which slices; an adaptive loop (look, and move to another slice if not confident) is one option.
+
 ## 2. Audit: find label errors (cheapest step, biggest payoff)
 
 Do these in order. Each step produces a list of suspicious cells with report snippets for the user or a review process to confirm. Do not change labels automatically.
@@ -41,7 +46,7 @@ Do these in order. Each step produces a list of suspicious cells with report sni
 2. **Disagreement between label sources:** count cells where two sources differ by more than 0.3, and check the direction. If one source is almost always higher, the other is probably missing that finding systematically.
 3. **Disagreement across repeated reads:** have the LLM read the same report several times. Record `n_sources`, `spread` (max − min) and a confidence per cell, and re-read the source text for high-spread cells.
 4. **Calibration check (on expert ground truth):** bin labels by value and check that the observed positive rate in each bin is close to the bin's value. Labels around 0.3 should be positive about 30% of the time.
-5. **Expect a built-in gap between reports and ground truth.** If ground truth was read from the images, the report may simply not mention some findings (synovitis and diffuse disease are typical). That is not an extraction error. Report-only labels have a ceiling here, and only image-model OOF correction (Section 4) can get past it.
+5. **Expect a built-in gap between reports and ground truth.** If ground truth was read from the images, the report may simply not mention some findings (synovitis and diffuse disease are typical), or even contradict it: in the RSNA knee expert set, one report explicitly states there is no effusion while the expert label is effusion = 1. That is not an extraction error. Report-only labels have a ceiling here, and only image-model OOF correction (Section 4) or image-aware labelling can get past it. For calibration, a report-only label set plus one good image model landed around 0.94 public AUC for several independent teams in that competition.
 
 Audit example (pandas; adjust column names):
 
@@ -82,14 +87,22 @@ out = np.where(np.isnan(j), b, (b + j) / 2)
 - This is pseudo-labelling. Say so when reporting a "single model" result.
 - It needs full K-fold OOF, which costs about K training runs. Check the time budget first.
 
-## 5. Using labels in training
+## 5. Very few expert labels, external data and borrowed priors
+
+- **Tiny expert sets (tens of cases):** do not fit a large model to them. If you learn anything from the expert set, use very few parameters (a per-finding scale/offset, a blend weight) or a mostly frozen pretrained model. With little supervision, the prior does the work; the expert set should only nudge it.
+- **Borrowed priors can be overfitted priors.** Public checkpoints and blends tuned on a public leaderboard may not transfer to the private split. Prefer priors whose training data and selection you can see.
+- **Check whether pretrained weights have seen your evaluation set.** In the RSNA knee case, an ensemble containing public pretrained weights scored best on the 58 expert cases (0.924) but worse on the leaderboard (0.933) than a single model trained only on our labels (0.940 public, 0.920 expert). The most likely reason: those weights had been trained on data that overlapped the expert set. Never select models on an expert set that any component may have trained on.
+- **External labelled data:** when mixing sources, trust order is competition annotations > external annotations > absence of a label (treat "not annotated" as unknown and mask it, not as negative). Map only the findings the external source really measures and mask the rest.
+- **Check the competition rules for every external dataset and pretrained weight** (access restrictions, licences, explicit bans). An external source can add a lot of score and still be disallowed or disputed; keep a clean submission that does not depend on it.
+
+## 6. Using labels in training
 
 - Use soft labels directly as BCE targets. **Do not binarise them** (rounding to 0/1 measurably hurt).
 - Make three things explicit and record them: target values, per-cell loss weights, and the mask. Treat `not_addressed` with a prior value or a mask, never as 0.
 - Compute `pos_weight` from the supervision labels on the training side.
 - Optionally initialise the output bias to the logit of the mean training label (speeds up early convergence).
 
-## 6. Evaluating label schemes (the most important discipline)
+## 7. Evaluating label schemes (the most important discipline)
 
 - **Do not compare label schemes against report-derived labels.** A model always scores best on the labels it was trained on, so that comparison is biased.
 - The only usable judges are expert ground truth (small and noisy, so treat it as a development reference) and an external hidden test such as a public leaderboard. Treat differences within a few hundredths on a small expert set as noise. Use bootstrap CIs or several seeds when possible.
@@ -99,16 +112,16 @@ out = np.where(np.isnan(j), b, (b + j) / 2)
 - Do not pick checkpoints or SWA epochs on the expert set and then report scores on the same expert set. Select inside an inner fold or use a fixed epoch.
 - Smoke-test first (a few cases, 1 epoch) to confirm the pipeline, logs, output files and label hash, then run the full job. Smoke-test AUC means nothing.
 
-## 7. Recommended workflow (ordered by return on effort)
+## 8. Recommended workflow (ordered by return on effort)
 
-1. Check the manifest, grouping and how the expert set has been used. Record the current label hashes.
+1. Check the manifest, grouping and how the expert set has been used, including whether any pretrained weights you plan to use may have seen it. Record the current label hashes.
 2. Run the multilingual keyword audit and the source-disagreement audit, then produce a list of suspicious cells, get them confirmed by the user or reviewer, and save a new label version.
 3. Average all trusted sources cell by cell to get a candidate label set.
 4. Run a paired experiment, old labels vs. candidate labels, on a single fold. Report per-class and macro AUC on the expert set.
 5. If time allows, add OOF soft blending, starting with findings that reports tend to omit.
 6. When reporting, separate "code implemented / smoke run passed / full run complete / effect validated", and list per-class metrics, sample sizes and limitations.
 
-## 8. Report template (plain language)
+## 9. Report template (plain language)
 
 - **What changed:** label sources, fusion rule, weight/mask policy
 - **How it was compared:** paired setup, and exactly which factors changed
