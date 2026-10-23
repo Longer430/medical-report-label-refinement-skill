@@ -120,22 +120,26 @@ Public reports suggest the next gain is image-model OOF blending, especially for
 
 I skipped this because a full 5-fold OOF did not fit the time left in the competition.
 
-## Leaderboard outcome (public split, 30% of the hidden test)
+## Leaderboard outcome (final: public = 30% of the hidden test, private = the other 70%)
 
-| Submission | Expert set (58) | Public LB |
-|---|---|---|
-| Public v9 weights, no fine-tuning | n/a | 0.932 |
-| v9 weights fine-tuned on in-house v5 labels | 0.917 | 0.934 |
-| ImageNet CoAtNet, blendjev labels, fold 0 only | 0.903 | 0.926 |
-| **ImageNet CoAtNet, blendjev labels, all 4,271 cases, last epoch** | 0.920 | **0.940** |
-| Probability mean of 3 models incl. the v9-based ones | **0.924** | 0.933 |
-| Two v9-initialised all-data submissions | 0.917 | timed out on Kaggle |
+| Submission | Expert set (58) | Public LB | **Private LB** |
+|---|---|---|---|
+| Public v9 weights, no fine-tuning | n/a | 0.932 | 0.916 |
+| v9 weights fine-tuned on in-house v5 labels | 0.917 | 0.934 | 0.917 |
+| ImageNet CoAtNet, blendjev labels, fold 0 only | 0.903 | 0.926 | 0.910 |
+| **ImageNet CoAtNet, blendjev labels, all 4,271 cases, last epoch** | 0.920 | **0.940** | **0.927** |
+| Probability mean of 3 models incl. the v9-based ones | **0.924** | 0.933 | 0.917 |
+| Two v9-initialised all-data submissions | 0.917 | timed out on Kaggle | - |
+| Public 0.958 community notebook (uses OAI/fastMRI-trained weights) + the blendjev model at 10-20% | n/a | 0.958 | 0.942 |
+
+Final selection was "one high, one safe": the community blend (highest public score, disputed external data) plus the clean blendjev model. The final score is the better private score of the two: 0.942.
 
 Lessons:
 
-- The new labels did carry over to the hidden test: the clean, all-data blendjev model is the best submission built only from competition data and CC0 labels (0.940 vs 0.934 before).
-- The expert set mis-ranked the ensemble. Its v9 members came from public weights whose training data probably overlapped the expert cases, which inflated their expert-set scores. Never select on an expert set that a component may have trained on.
-- Several independent teams reported about 0.94 public for "report-derived labels + one image model", which looks like the practical ceiling of that recipe. Higher public scores came from external data (with disputed rules), stronger architectures, and blends tuned on the public split.
+- **The new labels held up on the private split.** The clean, all-data blendjev model is the best submission built only from competition data and CC0 labels, and its lead over the old v5-label model grew from +0.006 (public) to +0.010 (private).
+- **Every submission dropped 0.013-0.016 from public to private, and the order did not change.** The private split was simply harder; a uniform drop is not evidence of overfitting. The community blend tuned on the public split dropped slightly more (0.016 vs 0.013) but stayed on top.
+- **The expert set mis-ranked the ensemble, and the private split confirmed it.** The ensemble with v9 members was best on the 58 expert cases (0.924) but 0.010 below the single blendjev model on private. Its v9 members came from public weights whose training data probably overlapped the expert cases. Never select on an expert set that any component may have trained on.
+- Several independent teams reported about 0.94 public for "report-derived labels + one image model", which looks like the practical ceiling of that recipe. Higher scores came from external data (with disputed rules), stronger architectures, and blends tuned on the public split.
 - Runtime matters: two submissions that were fine locally timed out on Kaggle's hidden test. Time one full hidden-test-sized run before betting a final submission on a slower model.
 
 ## What the public scores do and do not show
