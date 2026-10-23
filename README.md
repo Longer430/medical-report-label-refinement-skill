@@ -4,15 +4,18 @@ An agent skill (Claude / Codex `SKILL.md` format) for improving **weak labels in
 
 It walks an agent through:
 
-- **Extraction:** turning reports into soft labels with `present / absent / not_addressed`, a calibrated probability, and a supporting quote
-- **Auditing:** multilingual keyword checks, disagreement between label sources, repeated-read spread, calibration
-- **Fusion:** cell-wise averaging of independent label sources
-- **OOF correction:** blending out-of-fold image-model predictions into labels for findings that reports tend to omit
-- **Fair evaluation:** paired experiments, expert-set discipline, and what a score can and cannot show
+- **Extraction:** a descriptive schema (mention class × severity × supporting quote), with probabilities mapped in code and calibrated to expert positive rates
+- **Multimodal image reads:** using frontier multimodal LLMs to read MRI slices for findings reports omit, and fusing them with text labels
+- **Auditing:** multilingual keyword checks, source disagreement, repeated-read spread, calibration, ordinal and site-habit checks
+- **Fusion and OOF correction:** cell-wise / z-score fusion and anchored out-of-fold self-distillation
+- **Site bias:** a per-site logit offset used only during training to absorb reporting habits
+- **Fair evaluation:** instrument noise, sealed folds, per-finding hidden-test probes, pre-registered gates, and what a score can and cannot show
+
+For the image side (DICOM, laterality, ROI crops, study models, offline inference), see the companion skill `mri-study-pipeline`.
 
 ## Origin
 
-Distilled from the public discussions and released code of the
+Distilled from the public discussions, released code and post-competition write-ups of the
 [RSNA 2026 Knee Abnormality Detection](https://www.kaggle.com/competitions/rsna-knee-abnormality-detection) Kaggle competition, plus a local paired comparison of two report-label sets. It credits the public work of stevenleehans, nartaa (blendjev labels), riadmohamed42 (JEV labels), Archit Konde, hengck23, Chris Deotte and Kirderf. The skill contains no competition data, reports, or labels.
 
 ## Example
