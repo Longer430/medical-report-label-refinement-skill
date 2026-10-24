@@ -17,7 +17,7 @@ This walks through the skill on a real competition. All numbers are either quote
 | Folds | The popular public folds file splits by study with no patient key. My own manifest groups by patient / duplicate imaging, so related studies never span folds. |
 | Label versions | One in-house set ("v5", soft values plus a `__conf` weight column) and several public sets. Hashes recorded before any change. |
 
-## Step 1: The public label lineage (Skill sections 1 and 3)
+## Step 1: The public label lineage (Skill sections 1 and 4)
 
 The strongest public labels were built by stacking independent report reads and averaging them:
 
@@ -40,7 +40,7 @@ What the skill rules map to:
 
 Sources: [rsna-knee-hpo-assets](https://www.kaggle.com/datasets/nartaa/rsna-knee-hpo-assets), [jev-knee-labels](https://www.kaggle.com/datasets/riadmohamed42/jev-knee-labels), [rsna-knee-s6fall-weights training_code](https://www.kaggle.com/datasets/nartaa/rsna-knee-s6fall-weights), [author Q&A](https://www.kaggle.com/datasets/nartaa/rsna-knee-s6fall-weights/discussion/750180).
 
-## Step 2: Audit my labels against blendjev (Skill section 2)
+## Step 2: Audit my labels against blendjev (Skill section 3)
 
 I compared in-house v5 with blendjev cell by cell on the 4,349 report-labelled studies.
 
@@ -58,7 +58,7 @@ So v5 was systematically missing explicitly reported synovitis, including in non
 
 A trap I hit: v5's rows for the gold-58 studies were the structured gold values copied in (AUC = 1.000 against gold). **They cannot be used to judge v5's label quality.** blendjev has no gold rows at all, so the two label sets cannot be compared on gold directly.
 
-## Step 3: A paired experiment, not a label-vs-label score (Skill section 6)
+## Step 3: A paired experiment, not a label-vs-label score (Skill section 11)
 
 Since labels can only be judged through the model they produce, I set up two arms that are identical except for supervision:
 
@@ -110,7 +110,7 @@ How to read it:
 - Checkpoints were selected on fold-0, never on gold-58, so the gold-58 numbers are not inflated by selection.
 
 
-## Step 4: OOF correction (Skill section 4), not done here
+## Step 4: OOF correction (Skill section 5), not done here
 
 Public reports suggest the next gain is image-model OOF blending, especially for synovitis and lateral OA, which reports often leave out:
 
