@@ -256,6 +256,8 @@ Each item was reported independently by at least two RSNA knee teams. Treat it a
 
 ## Files in this skill
 
+If only `SKILL.md` is present (for example a copy saved directly into Claude), the other files are in the GitHub repository Longer430/medical-report-label-refinement-skill and in the user's Codex copy (`~/.codex/skills/medical-report-label-refinement/`).
+
 - `examples.md`: a full worked example on the RSNA 2026 Knee data.
 - `references/rsna-knee-writeups.md`: per-team digest of the post-competition write-ups (methods, reported numbers, links). Read it when you need the details or the source behind a rule above.
 - `scripts/audit_labels.py`: Section 3 audit (per-finding correlation, disagreement direction, multilingual keyword screening; writes suspicious cells for review).
