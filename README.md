@@ -30,6 +30,10 @@ examples.md                      RSNA 2026 Knee walk-through + how to reproduce 
 scripts/audit_labels.py          compare two label tables + multilingual keyword screening
 scripts/build_blend.py           cell-wise mean of two label sources (blendjev rule)
 scripts/download_public_labels.py  fetch the public labels / train.csv from Kaggle (nothing is redistributed)
+scripts/label_tools.py           calibrate / fuse / blend / decouple / probe / bootstrap / within-site
+scripts/site_bias.py             training-only site bias (numpy init + PyTorch module)
+scripts/selftest_label_tools.py  synthetic-data checks for the tools above
+references/rsna-knee-writeups.md digest of the post-competition write-ups (own summaries, links)
 toy_data/                        10 fictional studies to try the scripts in seconds
 ```
 

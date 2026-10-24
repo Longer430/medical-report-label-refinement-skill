@@ -254,7 +254,17 @@ Each item was reported independently by at least two RSNA knee teams. Treat it a
 - **Suggested next step**
 
 
-For a full worked example, see `examples.md` in this skill's folder. Ready-made helpers live in `scripts/`: `audit_labels.py` (Section 3 audit: per-finding correlation, disagreement direction, multilingual keyword screening, writes suspicious cells for review) and `build_blend.py` (Section 4 cell-wise mean with fallback). Try them on `toy_data/` first. Run them by path relative to this skill's folder (for example `python <skill folder>/scripts/audit_labels.py ...`); dependencies are listed in `requirements.txt`.
+## Files in this skill
+
+- `examples.md`: a full worked example on the RSNA 2026 Knee data.
+- `references/rsna-knee-writeups.md`: per-team digest of the post-competition write-ups (methods, reported numbers, links). Read it when you need the details or the source behind a rule above.
+- `scripts/audit_labels.py`: Section 3 audit (per-finding correlation, disagreement direction, multilingual keyword screening; writes suspicious cells for review).
+- `scripts/build_blend.py`: Section 4 cell-wise mean with fallback.
+- `scripts/label_tools.py`: library + CLI with `calibrate` (Section 1 mention-class levels from expert rates), `fuse` (Section 4 z-score fusion with map-back and audit sidecar), `blend` (Section 5 anchored OOF target), `decouple` (Section 10 rank-space decoupling), `probe-make` / `probe-read` (Section 11 per-finding hidden-test AUC), `bootstrap` (paired group-level macro-AUC CI) and `within-site` (Section 6 validation).
+- `scripts/site_bias.py`: Section 6 site keys, bias initialisation and a PyTorch `SiteBias` module that is applied in training and dropped in eval.
+- `scripts/selftest_label_tools.py`: checks all of the above on synthetic data and writes tables to try the CLI on. Run it first.
+
+Try the scripts on `toy_data/` or the self-test output before real data. Run them by path relative to this skill's folder (for example `python <skill folder>/scripts/label_tools.py --findings "Effusion,Synovitis" calibrate ...`; `--findings` is comma-separated and goes before the subcommand); dependencies are in `requirements.txt`.
 
 ---
 
