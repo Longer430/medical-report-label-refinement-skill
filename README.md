@@ -11,7 +11,7 @@ It walks an agent through:
 - **Site bias:** a per-site logit offset used only during training to absorb reporting habits
 - **Fair evaluation:** instrument noise, sealed folds, per-finding hidden-test probes, pre-registered gates, and what a score can and cannot show
 
-For the image side (DICOM, laterality, ROI crops, study models, offline inference), see the companion skill `mri-study-pipeline`.
+For the image side (DICOM, laterality, ROI crops, study models, offline inference), see the companion skill [mri-study-pipeline](https://github.com/Longer430/mri-study-pipeline-skill).
 
 ## Origin
 
