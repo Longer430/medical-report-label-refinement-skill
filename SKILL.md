@@ -220,6 +220,20 @@ Report-trained models inherit couplings that the expert rubric does not have (re
 - Do not pick checkpoints, epochs or blend weights on the expert set and then report on it. Every blend fitted to the 58 expert cases lost on the leaderboard for several teams.
 - Smoke-test first (a few cases, 1 epoch) to confirm the pipeline, logs, output files and label hash. Smoke-test AUC means nothing.
 
+### Tried by several teams, did not help (do not try these first)
+
+Each item was reported independently by at least two RSNA knee teams. Treat it as a low prior, not a ban.
+
+- **More text-only LLM readers, more polished prompts, or mapping report size words onto the rubric** (72nd, 74th, Civitasmass, Tucker Arrants, 412th): the ceiling is in the reports.
+- **Rule-based relabelling from report wording** (74th: −0.020 LB; Civitasmass: explicit size-descriptor mapping hurt).
+- **Fine-tuning a small LLM as the extractor, or distilling the readers into a text classifier** (49th, 76th): worse than zero-shot large models.
+- **Masking suspect cells, confident learning, PU losses** (49th, 76th, Tom Aindow, Archit Konde): no gain or worse.
+- **Adopting a label version because it gained a lot on the expert set** (76th: +0.022 on the 58 cases, lost on both leaderboards).
+- **Fitting per-class weights, prunes or stackers on the expert set** (49th, 74th, 412th, Northstar): lost on the leaderboard every time.
+- **Using the expert cases as ordinary training targets or as few-shot prompt examples** (Civitasmass, 102nd): neutral to negative.
+- **Agentic multi-step LLM readers, or an agent rewriting the reading rules** (Civitasmass, tingyi): no better than a plain prompt.
+- **More self-distillation rounds after saturation** (49th third round, 76th fourth generation, 72nd second generation): flat.
+
 ## 12. Recommended workflow (ordered by return on effort)
 
 1. Check the manifest, grouping, site fingerprint and how the expert set has been used, including whether any pretrained weights may have seen it. Run the Section 9 image-side checks. Measure instrument noise. Record label hashes.
